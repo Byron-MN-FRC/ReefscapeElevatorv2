@@ -47,12 +47,12 @@ public class Elevator extends SubsystemBase {
     public boolean enabledClimb = false;
 
     private final XboxController accessory = new XboxController(0);
-      TalonFXConfiguration elevatorUpperConfig = new TalonFXConfiguration();
+    TalonFXConfiguration elevatorUpperConfig = new TalonFXConfiguration();
     TalonFXConfiguration elevatorLowerConfig = new TalonFXConfiguration();
     private final MotionMagicVoltage m_motionMagicReqU = new MotionMagicVoltage(0);
     private final MotionMagicVoltage m_motionMagicReqL = new MotionMagicVoltage(0);
 
-   /**
+    /**
     *
     */
     public Elevator() {
@@ -113,6 +113,7 @@ public class Elevator extends SubsystemBase {
             System.out.println("Could not configure device. Error: " + statusL.toString());
         }
     }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
@@ -122,11 +123,14 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("Top Pos", stage2motor.getPosition().getValueAsDouble());
         // SmartDashboard.putBoolean("Climbing", enabledClimb);
 
-        if (elevatorBottomSwich.get()) {
+        if (!elevatorBottomSwich.get()) {
             stage1motor.setPosition(0);
+            stage1motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.lowerFirst).withSlot(0));
         }
-        if (elevatorTopSwich.get()) {
+        if (!elevatorTopSwich.get()) {
             stage2motor.setPosition(0);
+
+            stage2motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.upperFirst).withSlot(0));
         }
 
         SmartDashboard.putBoolean("bottomSwitch", getBottomSwitch());
