@@ -51,6 +51,7 @@ public class Elevator extends SubsystemBase {
     TalonFXConfiguration elevatorLowerConfig = new TalonFXConfiguration();
     private final MotionMagicVoltage m_motionMagicReqU = new MotionMagicVoltage(0);
     private final MotionMagicVoltage m_motionMagicReqL = new MotionMagicVoltage(0);
+    public boolean stopped = false;
 
     /**
     *
@@ -123,18 +124,17 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("Top Pos", stage2motor.getPosition().getValueAsDouble());
         // SmartDashboard.putBoolean("Climbing", enabledClimb);
 
-        if (elevatorBottomSwich.get()) {
+        if (!elevatorBottomSwich.get()) {
             stage1motor.setPosition(0);
-            stage1motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.lowerFirst).withSlot(0));
+            
         }
-        if (elevatorTopSwich.get()) {
+        if (!elevatorTopSwich.get()) {
             stage2motor.setPosition(0);
-
-            stage2motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.upperFirst).withSlot(0));
+            
         }
 
-        SmartDashboard.putBoolean("bottomSwitch", !getBottomSwitch());
-        SmartDashboard.putBoolean("topSwitch", !getTopSwitch());
+        SmartDashboard.putBoolean("bottomSwitch", getBottomSwitch());
+        SmartDashboard.putBoolean("topSwitch", getTopSwitch());
 
     }
 
@@ -148,11 +148,19 @@ public class Elevator extends SubsystemBase {
     // here. Call these from Commands.
 
     public boolean getBottomSwitch() {
-        return elevatorBottomSwich.get();
+        return !elevatorBottomSwich.get();
     }
 
     public boolean getTopSwitch() {
-        return elevatorTopSwich.get();
+        return !elevatorTopSwich.get();
+    }
+
+    public boolean getmotor1pos() {
+        return stage1motor.getPosition().getValueAsDouble() == 0;
+    }
+
+    public boolean getmotor2pos() {
+        return stage2motor.getPosition().getValueAsDouble() == 0;
     }
 
     public void setFirst() {
