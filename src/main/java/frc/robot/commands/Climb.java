@@ -60,12 +60,14 @@ public class Climb extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        // System.out.println("At Level Climb");
+        m_motors.stopBothMotors();
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return m_motors.isMotorOneAtPos() && m_motors.isMotorTwoAtPos();
     }
 
     @Override

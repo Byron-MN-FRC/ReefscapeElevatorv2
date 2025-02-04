@@ -61,12 +61,15 @@ public class LevelOne extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        // System.out.println("At Level One");
+        m_motors.stopBothMotors();
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_motors.getmotor1pos();
+        return m_motors.isMotorOneAtPos() && m_motors.isMotorTwoAtPos();
+
     }
 
     @Override

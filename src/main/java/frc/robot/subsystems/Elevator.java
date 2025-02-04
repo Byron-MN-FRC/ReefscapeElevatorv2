@@ -46,12 +46,14 @@ public class Elevator extends SubsystemBase {
 
     public boolean enabledClimb = false;
 
-    private final XboxController accessory = new XboxController(0);
+    private final XboxController accessory = new XboxController(1);
     TalonFXConfiguration elevatorUpperConfig = new TalonFXConfiguration();
     TalonFXConfiguration elevatorLowerConfig = new TalonFXConfiguration();
     private final MotionMagicVoltage m_motionMagicReqU = new MotionMagicVoltage(0);
     private final MotionMagicVoltage m_motionMagicReqL = new MotionMagicVoltage(0);
     public boolean stopped = false;
+    private double stage1motorGoalPos;
+    private double stage2motorGoalPos;
 
     /**
     *
@@ -129,7 +131,7 @@ public class Elevator extends SubsystemBase {
             
         }
         if (!elevatorTopSwich.get()) {
-            stage2motor.setPosition(0);
+            stage2motor.setPosition(10);
             
         }
 
@@ -163,27 +165,40 @@ public class Elevator extends SubsystemBase {
         return stage2motor.getPosition().getValueAsDouble() == 0;
     }
 
+    public boolean isMotorOneAtPos() {
+        return Math.abs(stage1motor.getPosition().getValueAsDouble() - stage1motorGoalPos) < .1;
+    }
+
+    public boolean isMotorTwoAtPos() {
+        return Math.abs(stage2motor.getPosition().getValueAsDouble() - stage2motorGoalPos) < .1;
+    }
+
     public void setFirst() {
         stage1motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.lowerFirst).withSlot(0));
         stage2motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.upperFirst).withSlot(0));
+        stage1motorGoalPos = Constants.Positions.lowerFirst;
+        stage2motorGoalPos = Constants.Positions.upperFirst;
     }
 
     public void setSecond() {
         stage1motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.lowerSecond).withSlot(0));
         stage2motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.upperSecond).withSlot(0));
-
+        stage1motorGoalPos = Constants.Positions.lowerSecond;
+        stage2motorGoalPos = Constants.Positions.upperSecond;
     }
 
     public void setThird() {
         stage1motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.lowerThird).withSlot(0));
         stage2motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.upperThird).withSlot(0));
-
+        stage1motorGoalPos = Constants.Positions.lowerThird;
+        stage2motorGoalPos = Constants.Positions.upperThird;
     }
 
     public void setFourth() {
         stage1motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.lowerFourth).withSlot(0));
         stage2motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.upperFourth).withSlot(0));
-
+        stage1motorGoalPos = Constants.Positions.lowerFourth;
+        stage2motorGoalPos = Constants.Positions.upperFourth;
     }
 
     public void setClimb() {
@@ -191,6 +206,13 @@ public class Elevator extends SubsystemBase {
             stage1motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.lowerClimb).withSlot(0));
             stage2motor.setControl(m_motionMagicReqU.withPosition(Constants.Positions.upperClimb).withSlot(0));
             // enabledClimb = true;
+            stage1motorGoalPos = Constants.Positions.lowerClimb;
+            stage2motorGoalPos = Constants.Positions.upperClimb;
         }
+    }
+
+    public void stopBothMotors() {
+        stage1motor.set(0);
+        stage2motor.set(0);
     }
 }
